@@ -1,0 +1,11 @@
+{
+  "name": "easyppt",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A macOS-friendly PowerPoint Office.js add-in for scientific presentations.",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/dev-server.mjs",
+    "start:http": "node scripts/dev-server.mjs --http"
+  }
+}

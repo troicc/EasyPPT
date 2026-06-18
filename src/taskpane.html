@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EasyPPT</title>
+    <link rel="stylesheet" href="./taskpane.css" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script>
+      window.MathJax = {
+        startup: { typeset: false },
+        tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]] },
+        svg: { fontCache: "none" }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script defer src="./taskpane.js"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>EasyPPT</h1>
+        <p>科研 PPT 效率助手</p>
+      </div>
+      <span id="office-status" class="status-pill">加载中</span>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>位置和尺寸</h2>
+        <div class="button-grid">
+          <button data-action="copyMetrics">复制位置尺寸</button>
+          <button data-action="pastePosition">粘贴位置</button>
+          <button data-action="pasteSize">粘贴尺寸</button>
+          <button data-action="pasteMetrics">粘贴位置尺寸</button>
+        </div>
+        <div class="button-grid">
+          <button data-action="alignLeft">左对齐</button>
+          <button data-action="alignCenter">水平居中</button>
+          <button data-action="alignTop">顶端对齐</button>
+          <button data-action="alignMiddle">垂直居中</button>
+        </div>
+        <div class="form-row">
+          <label>间距 pt <input id="spacing-gap" type="number" value="12" min="0" /></label>
+          <button data-action="spaceHorizontal">水平间距</button>
+          <button data-action="spaceVertical">垂直间距</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>图片排版</h2>
+        <div class="form-grid">
+          <label>列数 <input id="grid-columns" type="number" value="3" min="1" /></label>
+          <label>列距 <input id="grid-gap-x" type="number" value="12" min="0" /></label>
+          <label>行距 <input id="grid-gap-y" type="number" value="12" min="0" /></label>
+          <label>统一宽 <input id="grid-width" type="number" placeholder="留空" min="1" /></label>
+          <label>统一高 <input id="grid-height" type="number" placeholder="留空" min="1" /></label>
+        </div>
+        <div class="button-grid two">
+          <button data-action="arrangeGrid">网格排列</button>
+          <button data-action="arrangeByRows">按位置重排</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>图注和标签</h2>
+        <div class="form-grid">
+          <label>图注前缀 <input id="caption-prefix" value="Figure" /></label>
+          <label>起始序号 <input id="caption-start" type="number" value="1" min="1" /></label>
+          <label>图注字号 <input id="caption-size" type="number" value="9" min="5" /></label>
+          <label>间距 <input id="caption-gap" type="number" value="6" min="0" /></label>
+        </div>
+        <button class="wide" data-action="addCaptions">批量添加图注</button>
+        <div class="form-grid">
+          <label>标签样式
+            <select id="label-style">
+              <option value="A">A, B, C</option>
+              <option value="a">a, b, c</option>
+              <option value="A)">A), B), C)</option>
+              <option value="a)">a), b), c)</option>
+              <option value="1">1, 2, 3</option>
+              <option value="1)">1), 2), 3)</option>
+            </select>
+          </label>
+          <label>字号 <input id="label-size" type="number" value="16" min="6" /></label>
+          <label>X 偏移 <input id="label-offset-x" type="number" value="6" /></label>
+          <label>Y 偏移 <input id="label-offset-y" type="number" value="6" /></label>
+        </div>
+        <button class="wide" data-action="addLabels">批量添加标签</button>
+      </section>
+
+      <section class="panel">
+        <h2>Markdown / LaTeX</h2>
+        <textarea id="markdown-input" rows="8" placeholder="# 标题&#10;- 要点&#10;```python&#10;print('hello')&#10;```"></textarea>
+        <div class="form-grid">
+          <label>起点 X <input id="md-left" type="number" value="48" /></label>
+          <label>起点 Y <input id="md-top" type="number" value="48" /></label>
+          <label>宽度 <input id="md-width" type="number" value="620" /></label>
+        </div>
+        <button class="wide" data-action="insertMarkdown">插入 Markdown</button>
+        <textarea id="latex-input" rows="3" placeholder="E = mc^2"></textarea>
+        <button class="wide" data-action="insertLatexImage">插入高清公式</button>
+      </section>
+
+      <section class="panel">
+        <h2>配色与可读性</h2>
+        <div class="button-grid two">
+          <button data-action="checkSelectedContrast">检查选中对象</button>
+          <button data-action="fixSelectedContrast">修复现有配色</button>
+        </div>
+        <div class="color-row">
+          <label>目标颜色 <input id="color-to" type="color" value="#0072b2" /></label>
+          <label>应用方式
+            <select id="color-scope">
+              <option value="smart">智能填充 + 文字</option>
+              <option value="fill">填充色</option>
+              <option value="text">文字色</option>
+            </select>
+          </label>
+        </div>
+        <div id="color-preview" class="color-preview">
+          <span class="color-preview-sample">示例文字 Aa</span>
+          <span id="color-preview-meta"></span>
+        </div>
+        <button class="wide" data-action="applySelectedColor">应用到选中对象</button>
+        <div id="contrast-results" class="result-box muted">选择带文字的形状后运行检查。</div>
+        <div class="palette-strip" aria-label="色盲友好配色">
+          <button class="swatch" data-color="#0072B2" title="蓝色" style="--swatch:#0072B2"></button>
+          <button class="swatch" data-color="#E69F00" title="橙色" style="--swatch:#E69F00"></button>
+          <button class="swatch" data-color="#009E73" title="绿色" style="--swatch:#009E73"></button>
+          <button class="swatch" data-color="#CC79A7" title="紫红" style="--swatch:#CC79A7"></button>
+          <button class="swatch" data-color="#D55E00" title="朱红" style="--swatch:#D55E00"></button>
+          <button class="swatch" data-color="#56B4E9" title="天蓝" style="--swatch:#56B4E9"></button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>CSV 科研图</h2>
+        <p class="section-intro">先选图类型，再按固定表格填写。表格会自动同步为标准 CSV。</p>
+        <label class="chart-type-picker">① 选择作图类型
+          <select id="chart-type">
+            <option value="line">折线图</option>
+            <option value="scatter">散点图</option>
+            <option value="bar">分组柱状图</option>
+            <option value="replicatebar">重复值柱状图</option>
+            <option value="area">面积图</option>
+            <option value="errorbar">均值 ± 误差图</option>
+            <option value="box">箱线图</option>
+            <option value="heatmap">热图</option>
+          </select>
+        </label>
+        <div id="chart-format-guide" class="chart-format-guide"></div>
+        <div class="chart-table-heading">
+          <strong>② 填写数据</strong>
+          <span id="chart-table-size" class="muted"></span>
+        </div>
+        <div id="chart-data-table" class="chart-data-table"></div>
+        <div class="chart-table-actions">
+          <button class="secondary" data-action="addChartRow">＋ 数据行</button>
+          <button id="chart-add-series" class="secondary" data-action="addChartSeries">＋ 数据列</button>
+          <button class="secondary" data-action="resetChartTemplate">载入示例</button>
+        </div>
+        <details class="chart-advanced">
+          <summary>高级：直接粘贴或编辑 CSV</summary>
+          <textarea id="chart-csv" rows="7" placeholder="x,Control,Treatment&#10;0,1.2,1.4&#10;1,2.1,2.8&#10;2,2.9,4.1">x,Control,Treatment
+0,1.2,1.4
+1,2.1,2.8
+2,2.9,4.1
+3,3.4,5.2</textarea>
+          <button class="secondary wide" data-action="loadCsvIntoChartTable">将 CSV 载入上方表格</button>
+        </details>
+        <div class="chart-table-heading chart-settings-heading">
+          <strong>③ 设置样式并生成</strong>
+        </div>
+        <div class="form-grid">
+          <label>配色
+            <select id="chart-palette">
+              <option value="accessible">色盲友好</option>
+              <option value="journal">期刊经典</option>
+              <option value="mono">灰度打印</option>
+            </select>
+          </label>
+          <label>图标题 <input id="chart-title" placeholder="可选" /></label>
+          <label>X 轴 <input id="chart-x-label" value="X" /></label>
+          <label>Y 轴 <input id="chart-y-label" value="Y" /></label>
+          <label id="chart-bar-color-field" hidden>柱颜色
+            <input id="chart-bar-color" type="color" value="#FF5252" />
+          </label>
+        </div>
+        <div class="chart-options">
+          <label><input id="chart-show-grid" type="checkbox" checked /> 网格线</label>
+          <label><input id="chart-show-legend" type="checkbox" checked /> 图例</label>
+          <label><input id="chart-show-labels" type="checkbox" /> 数据标签</label>
+          <label id="chart-gradient-field" hidden><input id="chart-bar-gradient" type="checkbox" checked /> 渐变柱</label>
+        </div>
+        <div class="button-grid two">
+          <button data-action="insertCsvChart">插入高清图</button>
+          <button data-action="downloadCsvChartSvg">下载 SVG</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>DOI 引用</h2>
+        <div class="form-row">
+          <label>DOI <input id="doi-input" placeholder="10.1038/s41586-..." /></label>
+          <button data-action="lookupDoi">查询</button>
+        </div>
+        <div class="form-grid">
+          <label>引用格式
+            <select id="citation-format">
+              <option value="short">短引用</option>
+              <option value="full">完整引用</option>
+            </select>
+          </label>
+          <label>字体 <input id="citation-font" list="citation-fonts" value="Arial" /></label>
+          <label>字号 <input id="citation-size" type="number" value="8" min="5" max="24" step="0.5" /></label>
+          <label>颜色 <input id="citation-color" type="color" value="#555555" /></label>
+          <label>位置 X <input id="citation-left" type="number" value="36" /></label>
+          <label>位置 Y <input id="citation-top" type="number" value="500" /></label>
+          <label>宽度 <input id="citation-width" type="number" value="648" /></label>
+        </div>
+        <datalist id="citation-fonts">
+          <option value="Arial"></option>
+          <option value="Helvetica"></option>
+          <option value="Times New Roman"></option>
+          <option value="Aptos"></option>
+        </datalist>
+        <textarea id="citation-output" rows="4" placeholder="查询结果会显示在这里"></textarea>
+        <div id="citation-preview" class="citation-preview muted">短引用预览</div>
+        <div class="button-grid two">
+          <button data-action="insertCitation">插入当前页</button>
+          <button data-action="saveCitation">加入引用库</button>
+        </div>
+        <div id="citation-list" class="citation-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>素材库</h2>
+        <div id="section-divider-builder" class="section-divider-builder">
+          <div class="asset-section-heading">
+            <div>
+              <strong>经典章节过渡</strong>
+              <span>适合研究目的、研究内容等目录之间的过渡页</span>
+            </div>
+            <span class="asset-badge">6 套</span>
+          </div>
+          <div class="language-switch" role="group" aria-label="章节过渡语言">
+            <button class="language-option selected" type="button" data-section-language="zh">中文</button>
+            <button class="language-option" type="button" data-section-language="en">English</button>
+          </div>
+          <div class="section-preset-row" aria-label="常用章节标题">
+            <button class="section-preset" type="button" data-preset-index="0">研究背景</button>
+            <button class="section-preset" type="button" data-preset-index="1">研究目的</button>
+            <button class="section-preset" type="button" data-preset-index="2">研究内容</button>
+            <button class="section-preset" type="button" data-preset-index="3">研究方法</button>
+            <button class="section-preset" type="button" data-preset-index="4">结果讨论</button>
+            <button class="section-preset" type="button" data-preset-index="5">总结展望</button>
+          </div>
+          <div class="form-grid section-divider-fields">
+            <label>章节标题 <input id="section-title" value="研究目的" /></label>
+            <label>英文副标题 <input id="section-subtitle" value="Research Objective" /></label>
+            <label>章节编号 <input id="section-number" value="02" maxlength="4" /></label>
+            <label>页面基调
+              <select id="section-tone">
+                <option value="light">明亮白</option>
+                <option value="warm">温暖灰</option>
+                <option value="dark">深色</option>
+              </select>
+            </label>
+            <label>主题色 <input id="section-accent" type="color" value="#195b57" /></label>
+          </div>
+          <div class="section-template-grid" role="radiogroup" aria-label="章节过渡版式">
+            <button class="section-template selected" type="button" role="radio" aria-checked="true" data-template="swiss">
+              <span class="section-template-preview preview-swiss">
+                <i class="preview-block"></i><b>02</b><em>研究目的</em><small>RESEARCH OBJECTIVE</small>
+              </span>
+              <span>瑞士分栏</span>
+            </button>
+            <button class="section-template" type="button" role="radio" aria-checked="false" data-template="journal">
+              <span class="section-template-preview preview-journal">
+                <i>CHAPTER 02</i><b>研究目的</b><small>RESEARCH OBJECTIVE</small>
+              </span>
+              <span>期刊色带</span>
+            </button>
+            <button class="section-template" type="button" role="radio" aria-checked="false" data-template="axis">
+              <span class="section-template-preview preview-axis">
+                <i>02 / 06</i><b>研究目的</b><em></em><small>RESEARCH OBJECTIVE</small>
+              </span>
+              <span>极简坐标</span>
+            </button>
+            <button class="section-template" type="button" role="radio" aria-checked="false" data-template="focus">
+              <span class="section-template-preview preview-focus">
+                <i>02</i><b>研究目的</b><small>RESEARCH OBJECTIVE</small>
+              </span>
+              <span>深色聚焦</span>
+            </button>
+            <button class="section-template" type="button" role="radio" aria-checked="false" data-template="index">
+              <span class="section-template-preview preview-index">
+                <i>02</i><b>研究目的</b><small>RESEARCH OBJECTIVE</small>
+              </span>
+              <span>侧边索引</span>
+            </button>
+            <button class="section-template" type="button" role="radio" aria-checked="false" data-template="card">
+              <span class="section-template-preview preview-card">
+                <i><strong>02</strong><small>CHAPTER</small></i><b>研究目的</b><em>RESEARCH OBJECTIVE</em>
+              </span>
+              <span>编号卡片</span>
+            </button>
+          </div>
+          <p class="section-divider-tip">按 16:9 页面设计，建议在空白页使用；插入后均为可编辑的 PowerPoint 原生对象。</p>
+          <button class="wide" data-action="insertSectionDivider">插入章节过渡页</button>
+        </div>
+        <div id="top-nav-builder" class="top-nav-builder">
+          <div class="asset-section-heading">
+            <div>
+              <strong>特色顶部导航栏</strong>
+              <span>在内容页持续提示章节位置，适合完整汇报统一使用</span>
+            </div>
+            <span class="asset-badge">6 套</span>
+          </div>
+          <div class="language-switch" role="group" aria-label="导航栏语言">
+            <button class="language-option selected" type="button" data-nav-language="zh">中文</button>
+            <button class="language-option" type="button" data-nav-language="en">English</button>
+          </div>
+          <label class="stacked">栏目名称（用逗号分隔）
+            <input id="nav-labels" value="研究背景,研究目的,研究内容,研究方法,结果讨论,总结展望" />
+          </label>
+          <div class="form-grid nav-settings">
+            <label>当前章节
+              <select id="nav-active">
+                <option value="0">01 · 研究背景</option>
+                <option value="1" selected>02 · 研究目的</option>
+                <option value="2">03 · 研究内容</option>
+                <option value="3">04 · 研究方法</option>
+                <option value="4">05 · 结果讨论</option>
+                <option value="5">06 · 总结展望</option>
+              </select>
+            </label>
+            <label>导航位置
+              <select id="nav-position">
+                <option value="top">顶部</option>
+                <option value="bottom">底部</option>
+              </select>
+            </label>
+            <label>主题色 <input id="nav-accent" type="color" value="#195b57" /></label>
+            <label>显示章节编号
+              <select id="nav-numbered">
+                <option value="yes">显示</option>
+                <option value="no">隐藏</option>
+              </select>
+            </label>
+          </div>
+          <div class="nav-template-grid" role="radiogroup" aria-label="顶部导航栏版式">
+            <button class="nav-template selected" type="button" role="radio" aria-checked="true" data-nav-template="orbit">
+              <span class="nav-template-preview nav-preview-orbit">
+                <i></i><i></i><i class="active"></i><i></i><i></i><i></i>
+              </span>
+              <span>胶囊轨道</span>
+            </button>
+            <button class="nav-template" type="button" role="radio" aria-checked="false" data-nav-template="molecule">
+              <span class="nav-template-preview nav-preview-molecule">
+                <i></i><i></i><i class="active"></i><i></i><i></i><i></i>
+              </span>
+              <span>分子节点</span>
+            </button>
+            <button class="nav-template" type="button" role="radio" aria-checked="false" data-nav-template="editorial">
+              <span class="nav-template-preview nav-preview-editorial">
+                <i></i><i></i><i class="active"></i><i></i><i></i><i></i>
+              </span>
+              <span>期刊标签</span>
+            </button>
+            <button class="nav-template" type="button" role="radio" aria-checked="false" data-nav-template="steps">
+              <span class="nav-template-preview nav-preview-steps">
+                <i></i><i></i><i class="active"></i><i></i><i></i><i></i>
+              </span>
+              <span>阶梯进程</span>
+            </button>
+            <button class="nav-template" type="button" role="radio" aria-checked="false" data-nav-template="scale">
+              <span class="nav-template-preview nav-preview-scale">
+                <i></i><i></i><i class="active"></i><i></i><i></i><i></i>
+              </span>
+              <span>坐标刻度</span>
+            </button>
+            <button class="nav-template" type="button" role="radio" aria-checked="false" data-nav-template="cursor">
+              <span class="nav-template-preview nav-preview-cursor">
+                <i></i><i></i><i class="active"></i><i></i><i></i><i></i>
+              </span>
+              <span>光标聚焦</span>
+            </button>
+          </div>
+          <p class="section-divider-tip">导航栏宽度按 16:9 页面设计；推荐在整套 PPT 中固定一种版式。</p>
+          <button class="wide" data-action="insertTopNavigation">插入顶部导航栏</button>
+        </div>
+        <div class="asset-section-heading saved-assets-heading">
+          <div>
+            <strong>我的素材</strong>
+            <span>保存当前选中的对象组合</span>
+          </div>
+        </div>
+        <div class="asset-overview" aria-label="素材库概览">
+          <div class="asset-stat">
+            <strong id="asset-count">0</strong>
+            <span>个素材</span>
+          </div>
+          <div class="asset-stat">
+            <strong id="asset-shape-count">0</strong>
+            <span>个对象</span>
+          </div>
+          <div class="asset-stat asset-stat-wide">
+            <strong>本机保存</strong>
+            <span>仅存储在当前插件中</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>名称 <input id="asset-name" value="我的素材" /></label>
+          <button data-action="saveAsset">保存选中</button>
+        </div>
+        <div id="asset-list" class="asset-list"></div>
+        <div class="asset-export-card">
+          <div class="asset-export-icon" aria-hidden="true">↓</div>
+          <div class="asset-export-copy">
+            <span class="asset-export-label">导出位置</span>
+            <strong id="asset-export-title">系统“下载”文件夹</strong>
+            <span id="asset-export-detail">导出后可在 Finder → 下载中找到</span>
+            <code id="asset-export-filename">slidesci-assets-日期时间.json</code>
+          </div>
+        </div>
+        <div class="button-grid two">
+          <button data-action="exportAssets">导出 JSON</button>
+          <button data-action="importAssets">导入素材</button>
+          <input id="asset-file" type="file" accept="application/json" hidden />
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>AI 助手</h2>
+        <div class="form-grid">
+          <label>API 地址 <input id="ai-url" placeholder="https://api.openai.com/v1/chat/completions" /></label>
+          <label>模型 <input id="ai-model" value="gpt-4.1-mini" /></label>
+        </div>
+        <label class="stacked">API Key <input id="ai-key" type="password" autocomplete="off" /></label>
+        <textarea id="ai-prompt" rows="5">请把选中的 PPT 文本润色成适合科研汇报的中文表达，保持简洁。</textarea>
+        <div class="button-grid two">
+          <button data-action="saveAiSettings">保存设置</button>
+          <button data-action="rewriteSelectedText">润色选中文本</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>导出</h2>
+        <p class="section-intro">将当前幻灯片导出为图片，或将多张幻灯片合并为一个 PDF。</p>
+        <div class="form-grid export-options">
+          <label>导出格式
+            <select id="export-format">
+              <option value="png">PNG（无损）</option>
+              <option value="jpeg">JPEG（文件较小）</option>
+              <option value="webp">WebP（高压缩率）</option>
+              <option value="pdf">PDF（支持多页）</option>
+            </select>
+          </label>
+          <label id="export-range-field" class="export-conditional" hidden>PDF 页面范围
+            <select id="export-range">
+              <option value="current">当前页</option>
+              <option value="selected">已选页面</option>
+              <option value="all">全部页面</option>
+            </select>
+          </label>
+          <label>清晰度
+            <select id="export-resolution">
+              <option value="1280">标准 · 1280 px</option>
+              <option value="1920" selected>高清 · 1920 px</option>
+              <option value="3840">超高清 · 3840 px</option>
+              <option value="custom">自定义</option>
+            </select>
+          </label>
+          <label id="export-width-field" class="export-conditional" hidden>
+            自定义宽度
+            <input id="export-width" type="number" value="1920" min="320" max="7680" step="10" />
+          </label>
+          <label id="export-quality-field">
+            压缩质量
+            <select id="export-quality">
+              <option value="0.82">标准 · 82%</option>
+              <option value="0.92" selected>高 · 92%</option>
+              <option value="0.98">极高 · 98%</option>
+            </select>
+          </label>
+        </div>
+        <div id="export-summary" class="export-summary">PNG · 1920 px · 无损导出</div>
+        <button id="export-button" class="wide" data-action="exportSlides">导出当前页</button>
+      </section>
+    </main>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
