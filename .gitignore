@@ -1,3 +1,8 @@
 .certs/
 .DS_Store
+__pycache__/
+*.pyc
+logs/
 node_modules/
+.native-assets/
+native/bin/

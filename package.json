@@ -1,10 +1,11 @@
 {
-  "name": "easyppt",
+  "name": "easy-ppt",
   "version": "0.1.0",
   "private": true,
   "description": "A macOS-friendly PowerPoint Office.js add-in for scientific presentations.",
   "type": "module",
   "scripts": {
+    "build:native": "mkdir -p native/bin && swiftc native/clipboard-bridge.swift -o native/bin/clipboard-bridge",
     "start": "node scripts/dev-server.mjs",
     "start:http": "node scripts/dev-server.mjs --http"
   }

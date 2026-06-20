@@ -17,28 +17,130 @@
     <script defer src="./taskpane.js"></script>
   </head>
   <body>
-    <header class="app-header">
-      <div>
-        <h1>EasyPPT</h1>
-        <p>科研 PPT 效率助手</p>
-      </div>
-      <span id="office-status" class="status-pill">加载中</span>
-    </header>
+    <div class="app-sticky-header">
+      <header class="app-header">
+        <div>
+          <h1>EasyPPT</h1>
+          <p>科研 PPT 效率助手</p>
+        </div>
+        <span id="office-status" class="status-pill">加载中</span>
+      </header>
+      <nav class="tool-navigator" aria-label="功能导航">
+        <div class="tool-search-row">
+          <label class="tool-search">
+            <span aria-hidden="true">⌕</span>
+            <input id="tool-search-input" type="search" placeholder="搜索 DOI、图表、导出…" autocomplete="off" />
+          </label>
+          <button id="tool-search-clear" class="navigator-icon-button" type="button" aria-label="清除搜索" title="清除搜索" hidden>×</button>
+          <button id="tool-outline-open" class="navigator-outline-button" type="button" aria-haspopup="dialog" aria-controls="tool-outline">
+            <span aria-hidden="true">☰</span>
+            <span>大纲</span>
+          </button>
+        </div>
+        <div id="tool-search-results" class="tool-search-results" role="listbox" hidden></div>
+        <div id="favorite-shortcuts" class="favorite-shortcuts" aria-label="收藏模块"></div>
+      </nav>
+    </div>
 
     <main>
-      <section class="panel">
-        <h2>位置和尺寸</h2>
-        <div class="button-grid">
-          <button data-action="copyMetrics">复制位置尺寸</button>
-          <button data-action="pastePosition">粘贴位置</button>
-          <button data-action="pasteSize">粘贴尺寸</button>
-          <button data-action="pasteMetrics">粘贴位置尺寸</button>
+      <section class="panel metrics-panel" data-panel-id="位置和尺寸">
+        <h2>格式微调</h2>
+        <div class="metrics-heading">
+          <p class="section-intro">集中处理位置、文字、边框、对齐和间距等繁杂细节。</p>
+          <span id="metrics-status" class="metrics-status empty">未设置</span>
         </div>
-        <div class="button-grid">
-          <button data-action="alignLeft">左对齐</button>
-          <button data-action="alignCenter">水平居中</button>
-          <button data-action="alignTop">顶端对齐</button>
-          <button data-action="alignMiddle">垂直居中</button>
+        <h3 class="metrics-section-title">跨页位置与边框</h3>
+        <button class="wide metrics-copy-button" data-action="copyMetrics">
+          <span class="metrics-button-icon" aria-hidden="true">◎</span>
+          <span><strong>设为跨页基准</strong><small>记录位置、尺寸和边框</small></span>
+        </button>
+        <div id="metrics-reference" class="metrics-reference empty">
+          <div id="metrics-preview" class="metrics-preview" aria-label="基准对象位置预览"></div>
+          <div class="metrics-reference-copy">
+            <strong id="metrics-summary">尚未设置基准</strong>
+            <span id="metrics-detail">先在幻灯片中选择一个或多个对象。</span>
+          </div>
+          <button class="metrics-clear" data-action="clearMetrics" type="button">清除</button>
+        </div>
+        <div class="metrics-apply-heading">
+          <strong>应用到当前选中对象</strong>
+          <span>按需选择要锁定的属性</span>
+        </div>
+        <div class="metrics-apply-grid">
+          <button data-action="pastePosition" data-metrics-apply disabled>
+            <span class="metrics-action-icon" aria-hidden="true">⌖</span>
+            <strong>仅位置</strong>
+            <small>X、Y 坐标</small>
+          </button>
+          <button data-action="pasteSize" data-metrics-apply disabled>
+            <span class="metrics-action-icon" aria-hidden="true">↔</span>
+            <strong>仅尺寸</strong>
+            <small>宽度、高度</small>
+          </button>
+          <button data-action="pasteBorder" data-metrics-apply disabled>
+            <span class="metrics-action-icon" aria-hidden="true">□</span>
+            <strong>仅边框</strong>
+            <small>颜色、粗细、透明度</small>
+          </button>
+          <button data-action="pasteMetrics" data-metrics-apply disabled>
+            <span class="metrics-action-icon" aria-hidden="true">▣</span>
+            <strong>全部锁定</strong>
+            <small>位置、尺寸和边框</small>
+          </button>
+        </div>
+        <label class="metrics-match-row">多对象匹配
+          <select id="metrics-match-mode">
+            <option value="auto">智能对应（推荐）</option>
+            <option value="first">全部套用第 1 个基准</option>
+          </select>
+        </label>
+        <p class="metrics-help">智能对应：单个基准可应用到全部对象；多个基准按顺序一一对应。</p>
+        <div class="metrics-divider"></div>
+        <div class="format-painter-heading">
+          <div>
+            <h3>文本格式刷</h3>
+            <p>只复制文字格式，不碰形状和边框。</p>
+          </div>
+          <span id="format-painter-status" class="metrics-status empty">未复制</span>
+        </div>
+        <div class="format-painter-actions">
+          <button class="secondary" data-action="copyFormatStyle">
+            <strong>复制文字格式</strong>
+            <small>选 1 个文本框</small>
+          </button>
+          <button data-action="applyFormatStyle" data-format-apply disabled>
+            <strong>应用到全部</strong>
+            <small>覆盖当前所选对象</small>
+          </button>
+        </div>
+        <div id="format-painter-reference" class="format-painter-reference empty">
+          <div id="format-painter-swatch" class="format-painter-swatch">Aa</div>
+          <div>
+            <strong id="format-painter-summary">尚未复制样式</strong>
+            <span id="format-painter-detail">会应用到整个文本框，不会只改一个字。</span>
+          </div>
+          <button class="metrics-clear" data-action="clearFormatStyle" type="button">清除</button>
+        </div>
+        <p class="metrics-help">统一整个文本框的字体、字号、颜色、粗斜体和段落对齐，不替换文字内容。</p>
+        <div class="metrics-divider"></div>
+        <h3 class="metrics-subheading">快速对齐与间距</h3>
+        <div class="alignment-segment-list">
+          <div class="alignment-segment-row">
+            <div class="alignment-axis-label"><span>↔</span><strong>水平</strong></div>
+            <div class="alignment-segments" role="group" aria-label="水平对齐">
+              <button type="button" data-action="alignLeft" data-align-group="horizontal">左</button>
+              <button type="button" data-action="alignCenter" data-align-group="horizontal">居中</button>
+              <button type="button" data-action="alignRight" data-align-group="horizontal">右</button>
+            </div>
+          </div>
+          <div class="alignment-segment-row">
+            <div class="alignment-axis-label"><span>↕</span><strong>垂直</strong></div>
+            <div class="alignment-segments" role="group" aria-label="垂直对齐">
+              <button type="button" data-action="alignTop" data-align-group="vertical">顶端</button>
+              <button type="button" data-action="alignMiddle" data-align-group="vertical">居中</button>
+              <button type="button" data-action="alignBottom" data-align-group="vertical">底端</button>
+            </div>
+          </div>
         </div>
         <div class="form-row">
           <label>间距 pt <input id="spacing-gap" type="number" value="12" min="0" /></label>
@@ -47,111 +149,158 @@
         </div>
       </section>
 
-      <section class="panel">
-        <h2>图片排版</h2>
-        <div class="form-grid">
-          <label>列数 <input id="grid-columns" type="number" value="3" min="1" /></label>
-          <label>列距 <input id="grid-gap-x" type="number" value="12" min="0" /></label>
-          <label>行距 <input id="grid-gap-y" type="number" value="12" min="0" /></label>
-          <label>统一宽 <input id="grid-width" type="number" placeholder="留空" min="1" /></label>
-          <label>统一高 <input id="grid-height" type="number" placeholder="留空" min="1" /></label>
-        </div>
-        <div class="button-grid two">
-          <button data-action="arrangeGrid">网格排列</button>
-          <button data-action="arrangeByRows">按位置重排</button>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>图注和标签</h2>
-        <div class="form-grid">
-          <label>图注前缀 <input id="caption-prefix" value="Figure" /></label>
-          <label>起始序号 <input id="caption-start" type="number" value="1" min="1" /></label>
-          <label>图注字号 <input id="caption-size" type="number" value="9" min="5" /></label>
-          <label>间距 <input id="caption-gap" type="number" value="6" min="0" /></label>
-        </div>
-        <button class="wide" data-action="addCaptions">批量添加图注</button>
-        <div class="form-grid">
-          <label>标签样式
-            <select id="label-style">
-              <option value="A">A, B, C</option>
-              <option value="a">a, b, c</option>
-              <option value="A)">A), B), C)</option>
-              <option value="a)">a), b), c)</option>
-              <option value="1">1, 2, 3</option>
-              <option value="1)">1), 2), 3)</option>
-            </select>
+      <section class="panel figure-builder" data-panel-id="Figure 一键排版">
+        <h2>Figure 一键排版</h2>
+        <p class="section-intro">选中多张图片，一次完成排列、A–F 标签、整图标题和图注。</p>
+        <div class="figure-template-row">
+          <label>期刊模板
+            <select id="figure-template"></select>
           </label>
-          <label>字号 <input id="label-size" type="number" value="16" min="6" /></label>
-          <label>X 偏移 <input id="label-offset-x" type="number" value="6" /></label>
-          <label>Y 偏移 <input id="label-offset-y" type="number" value="6" /></label>
+          <button class="secondary" data-action="deleteFigureTemplate">删除</button>
         </div>
-        <button class="wide" data-action="addLabels">批量添加标签</button>
+        <div class="figure-core-grid">
+          <label>列数 <input id="grid-columns" type="number" value="2" min="1" /></label>
+          <label>画布宽 <input id="grid-width" type="number" value="220" min="1" /></label>
+          <label>画布高 <input id="grid-height" type="number" value="165" min="1" /></label>
+          <label>图片间距 <input id="grid-gap-x" type="number" value="10" min="0" /></label>
+        </div>
+        <input id="grid-gap-y" type="hidden" value="10" />
+        <div class="figure-copy">
+          <div class="figure-number-row">
+            <label>编号前缀 <input id="caption-prefix" value="Figure" /></label>
+            <label>序号 <input id="caption-start" type="number" value="1" min="1" /></label>
+          </div>
+          <label>整图标题 <input id="figure-title" placeholder="如：Treatment improves cell viability" /></label>
+          <label>图注 <textarea id="figure-caption" rows="2" placeholder="如：(A–F) 各处理组的代表性结果与定量分析。"></textarea></label>
+        </div>
+        <div class="figure-options">
+          <label><input id="figure-preserve-aspect" type="checkbox" checked /> 保持原比例</label>
+          <label><input id="figure-add-labels" type="checkbox" checked /> A–F 标签</label>
+          <label><input id="figure-add-title" type="checkbox" checked /> 整图标题</label>
+          <label><input id="figure-add-caption" type="checkbox" checked /> 图注</label>
+        </div>
+        <button class="wide figure-primary" data-action="applyFigureLayout">一键完成排版</button>
+        <div class="button-grid two figure-secondary-actions">
+          <button class="secondary" data-action="arrangeFigureOnly">仅整理图片</button>
+          <button class="secondary" data-action="saveFigureTemplate">保存当前模板</button>
+        </div>
+        <details class="figure-advanced">
+          <summary>标签与文字细节</summary>
+          <div class="form-grid">
+            <label>标签样式
+              <select id="label-style">
+                <option value="A">A, B, C</option>
+                <option value="a">a, b, c</option>
+                <option value="A)">A), B), C)</option>
+                <option value="a)">a), b), c)</option>
+                <option value="1">1, 2, 3</option>
+                <option value="1)">1), 2), 3)</option>
+              </select>
+            </label>
+            <label>标签字号 <input id="label-size" type="number" value="14" min="6" /></label>
+            <label>标签水平微调 <input id="label-offset-x" type="number" value="0" /></label>
+            <label>标签垂直微调 <input id="label-offset-y" type="number" value="0" min="0" /></label>
+            <label>标题字号 <input id="figure-title-size" type="number" value="14" min="6" /></label>
+            <label>图注字号 <input id="caption-size" type="number" value="9" min="5" /></label>
+            <label>文字间距 <input id="caption-gap" type="number" value="8" min="0" /></label>
+            <label>模板名称 <input id="figure-template-name" placeholder="如：Nature 双栏" /></label>
+          </div>
+        </details>
       </section>
 
-      <section class="panel">
+      <section class="panel compact-tool-panel markdown-panel">
         <h2>Markdown / LaTeX</h2>
-        <textarea id="markdown-input" rows="8" placeholder="# 标题&#10;- 要点&#10;```python&#10;print('hello')&#10;```"></textarea>
-        <div class="form-grid">
-          <label>起点 X <input id="md-left" type="number" value="48" /></label>
-          <label>起点 Y <input id="md-top" type="number" value="48" /></label>
-          <label>宽度 <input id="md-width" type="number" value="620" /></label>
+        <div class="compact-tool-section">
+          <label class="compact-field-heading" for="markdown-input">Markdown 内容</label>
+          <textarea id="markdown-input" rows="5" placeholder="# 标题&#10;- 要点&#10;```python&#10;print('hello')&#10;```"></textarea>
+          <div class="compact-action-row">
+            <details class="compact-settings">
+              <summary>位置设置</summary>
+              <div class="compact-coordinate-grid">
+                <label>起点 X <input id="md-left" type="number" value="48" /></label>
+                <label>起点 Y <input id="md-top" type="number" value="48" /></label>
+                <label>宽度 <input id="md-width" type="number" value="620" /></label>
+              </div>
+            </details>
+            <button data-action="insertMarkdown">插入 Markdown</button>
+          </div>
         </div>
-        <button class="wide" data-action="insertMarkdown">插入 Markdown</button>
-        <textarea id="latex-input" rows="3" placeholder="E = mc^2"></textarea>
-        <button class="wide" data-action="insertLatexImage">插入高清公式</button>
+        <div class="compact-tool-section latex-section">
+          <label class="compact-field-heading" for="latex-input">LaTeX 公式</label>
+          <div class="compact-input-action">
+            <textarea id="latex-input" rows="2" placeholder="E = mc^2"></textarea>
+            <button data-action="insertLatexImage">插入高清公式</button>
+          </div>
+        </div>
       </section>
 
       <section class="panel">
-        <h2>配色与可读性</h2>
-        <div class="button-grid two">
-          <button data-action="checkSelectedContrast">检查选中对象</button>
-          <button data-action="fixSelectedContrast">修复现有配色</button>
+        <h2>经典配色</h2>
+        <p class="section-intro">按用途浏览整套方案，也可以直接点选其中任意颜色。</p>
+        <div class="palette-tabs" role="tablist" aria-label="经典配色分类">
+          <button type="button" class="palette-tab active" data-palette-category="research">科研配色</button>
+          <button type="button" class="palette-tab" data-palette-category="atmosphere">氛围配色</button>
+          <button type="button" class="palette-tab" data-palette-category="traditional">传统配色</button>
         </div>
+        <div id="classic-palette-gallery" class="classic-palette-gallery"></div>
+        <div class="palette-selection-title">当前选择</div>
+        <div id="research-palette-preview" class="research-palette-preview" aria-label="当前科研配色"></div>
+        <div id="research-palette-meta" class="palette-note"></div>
+        <div id="palette-image-tools" class="image-palette-row">
+          <img id="palette-image-preview" alt="待识别科研图片预览" />
+          <div>
+            <button class="secondary wide" data-action="choosePaletteImage">从论文图片提取配色</button>
+            <span class="muted">提取结果会加入“科研配色”。</span>
+          </div>
+        </div>
+        <input id="palette-image-file" type="file" accept="image/png,image/jpeg,image/webp" hidden />
         <div class="color-row">
-          <label>目标颜色 <input id="color-to" type="color" value="#0072b2" /></label>
-          <label>应用方式
-            <select id="color-scope">
-              <option value="smart">智能填充 + 文字</option>
-              <option value="fill">填充色</option>
-              <option value="text">文字色</option>
+          <label>应用到
+            <select id="research-color-target">
+              <option value="fill">图形填充</option>
+              <option value="line">轮廓 / 线条</option>
+              <option value="text">文字颜色</option>
+            </select>
+          </label>
+          <label>分配方式
+            <select id="research-color-order">
+              <option value="selected">使用点选的颜色</option>
+              <option value="sequence">依次分配（超出不改）</option>
+              <option value="repeat">循环分配（适合大量对象）</option>
             </select>
           </label>
         </div>
-        <div id="color-preview" class="color-preview">
-          <span class="color-preview-sample">示例文字 Aa</span>
-          <span id="color-preview-meta"></span>
-        </div>
-        <button class="wide" data-action="applySelectedColor">应用到选中对象</button>
-        <div id="contrast-results" class="result-box muted">选择带文字的形状后运行检查。</div>
-        <div class="palette-strip" aria-label="色盲友好配色">
-          <button class="swatch" data-color="#0072B2" title="蓝色" style="--swatch:#0072B2"></button>
-          <button class="swatch" data-color="#E69F00" title="橙色" style="--swatch:#E69F00"></button>
-          <button class="swatch" data-color="#009E73" title="绿色" style="--swatch:#009E73"></button>
-          <button class="swatch" data-color="#CC79A7" title="紫红" style="--swatch:#CC79A7"></button>
-          <button class="swatch" data-color="#D55E00" title="朱红" style="--swatch:#D55E00"></button>
-          <button class="swatch" data-color="#56B4E9" title="天蓝" style="--swatch:#56B4E9"></button>
-        </div>
+        <button class="wide" data-action="applyResearchPalette">应用当前配色到 PPT 选中对象</button>
       </section>
 
       <section class="panel">
-        <h2>CSV 科研图</h2>
-        <p class="section-intro">先选图类型，再按固定表格填写。表格会自动同步为标准 CSV。</p>
-        <label class="chart-type-picker">① 选择作图类型
-          <select id="chart-type">
+        <h2>EasyPlot</h2>
+        <p class="section-intro">选择图表类型并填写数据，表格会自动同步为标准 CSV。</p>
+        <div class="chart-type-picker" data-chart-setting="chart-type">
+          <div class="chart-type-heading">
+            <strong>图表类型</strong>
+            <span>先选大类，再选具体图</span>
+          </div>
+          <select id="chart-type" class="chart-type-native" aria-label="作图类型">
             <option value="line">折线图</option>
             <option value="scatter">散点图</option>
             <option value="bar">分组柱状图</option>
+            <option value="barerrorline">柱状图＋误差棒/折线</option>
             <option value="replicatebar">重复值柱状图</option>
             <option value="area">面积图</option>
             <option value="errorbar">均值 ± 误差图</option>
             <option value="box">箱线图</option>
+            <option value="violin">小提琴图＋原始点</option>
+            <option value="dualaxis">双 Y 轴柱线叠加图</option>
             <option value="heatmap">热图</option>
           </select>
-        </label>
+          <div id="chart-type-category-pills" class="chart-type-category-pills" aria-label="图表大类"></div>
+          <div id="chart-type-option-pills" class="chart-type-option-pills" aria-label="具体图表类型"></div>
+          <div id="chart-type-current" class="chart-type-current"></div>
+        </div>
         <div id="chart-format-guide" class="chart-format-guide"></div>
         <div class="chart-table-heading">
-          <strong>② 填写数据</strong>
+          <strong>数据表</strong>
           <span id="chart-table-size" class="muted"></span>
         </div>
         <div id="chart-data-table" class="chart-data-table"></div>
@@ -159,6 +308,24 @@
           <button class="secondary" data-action="addChartRow">＋ 数据行</button>
           <button id="chart-add-series" class="secondary" data-action="addChartSeries">＋ 数据列</button>
           <button class="secondary" data-action="resetChartTemplate">载入示例</button>
+          <button class="secondary danger-lite" data-action="clearChartTable">清空数据</button>
+        </div>
+        <div class="chart-dataset-library">
+          <div class="chart-table-heading">
+            <strong>我的数据集</strong>
+            <span class="muted">保存真实数据，后续可重新打开修改</span>
+          </div>
+          <div class="chart-dataset-save-row">
+            <input id="chart-dataset-name" placeholder="输入数据集名称" />
+            <button data-action="saveChartDataset">保存当前数据</button>
+          </div>
+          <div class="chart-dataset-open-row">
+            <select id="chart-dataset-select">
+              <option value="">暂无已保存数据集</option>
+            </select>
+            <button class="secondary" data-action="loadChartDataset">打开</button>
+            <button class="secondary" data-action="deleteChartDataset">删除</button>
+          </div>
         </div>
         <details class="chart-advanced">
           <summary>高级：直接粘贴或编辑 CSV</summary>
@@ -169,29 +336,291 @@
 3,3.4,5.2</textarea>
           <button class="secondary wide" data-action="loadCsvIntoChartTable">将 CSV 载入上方表格</button>
         </details>
-        <div class="chart-table-heading chart-settings-heading">
-          <strong>③ 设置样式并生成</strong>
+        <div class="chart-setting-card chart-data-map-card">
+          <div class="chart-setting-card-heading">
+            <strong>数据映射与统计</strong>
+            <span>解释数据列、误差计算和复合图组成</span>
+          </div>
+          <div id="chart-key-controls" class="chart-key-controls"></div>
+          <div id="chart-barerrorline-settings" class="chart-submodule" hidden>
+            <strong>柱线图数据解释</strong>
+            <div class="form-grid chart-compact-grid">
+              <label>数据模式
+                <select id="chart-combo-data-mode">
+                  <option value="raw">输入原始重复值，自动计算误差</option>
+                  <option value="summary">我已经算好了均值和误差</option>
+                </select>
+              </label>
+              <label>误差类型
+                <select id="chart-combo-error-type">
+                  <option value="sd">SD</option>
+                  <option value="sem">SEM</option>
+                  <option value="ci95">95% CI</option>
+                </select>
+              </label>
+            </div>
+            <div class="chart-options">
+              <label><input id="chart-show-bar-error" type="checkbox" checked /> 柱显示误差棒</label>
+              <label><input id="chart-show-overlay-line" type="checkbox" checked /> 显示折线（右 Y 轴）</label>
+              <label><input id="chart-show-line-error" type="checkbox" /> 折线显示误差棒</label>
+            </div>
+          </div>
+          <div id="chart-errorbar-settings" class="chart-submodule" hidden>
+            <strong>误差棒数据解释</strong>
+            <div class="form-grid chart-compact-grid">
+              <label>数据模式
+                <select id="chart-error-data-mode">
+                  <option value="raw">输入原始重复值，自动计算误差</option>
+                  <option value="summary">我已经算好了均值和误差</option>
+                </select>
+              </label>
+              <label>误差类型
+                <select id="chart-error-type">
+                  <option value="sd">SD</option>
+                  <option value="sem">SEM</option>
+                  <option value="ci95">95% CI</option>
+                </select>
+              </label>
+            </div>
+            <p class="chart-module-note">原始模式下每行填写一条重复实验；空值会忽略，同组自动计算均值、误差和 n。</p>
+          </div>
         </div>
-        <div class="form-grid">
-          <label>配色
-            <select id="chart-palette">
-              <option value="accessible">色盲友好</option>
-              <option value="journal">期刊经典</option>
-              <option value="mono">灰度打印</option>
-            </select>
-          </label>
-          <label>图标题 <input id="chart-title" placeholder="可选" /></label>
-          <label>X 轴 <input id="chart-x-label" value="X" /></label>
-          <label>Y 轴 <input id="chart-y-label" value="Y" /></label>
+
+        <div class="chart-setting-card chart-axis-title-card">
+          <div class="chart-setting-card-heading">
+            <strong>标题与坐标轴</strong>
+            <span>图标题、轴标题、范围与刻度</span>
+          </div>
+          <div class="form-grid">
+            <label data-chart-setting="title">图标题 <input id="chart-title" placeholder="可选" /></label>
+            <label data-chart-setting="x-axis">X 轴 <input id="chart-x-label" value="X" /></label>
+            <label>左 Y 轴 <input id="chart-y-label" value="Y" /></label>
+            <label id="chart-y2-label-field" hidden>右 Y 轴 <input id="chart-y2-label" value="Secondary Y" /></label>
+          </div>
+          <details class="chart-advanced chart-axis-settings">
+            <summary>范围与刻度</summary>
+            <div class="chart-axis-group">
+              <strong>左 Y 轴</strong>
+              <div class="form-grid">
+                <label>范围模式
+                  <select id="chart-y-scale-mode">
+                    <option value="auto">自动规范定标</option>
+                    <option value="manual">手动设置</option>
+                  </select>
+                </label>
+                <label>主刻度间隔 <input id="chart-y-major-step" type="number" placeholder="自动" step="any" /></label>
+                <label>最小值 <input id="chart-y-min" type="number" placeholder="自动" step="any" /></label>
+                <label>最大值 <input id="chart-y-max" type="number" placeholder="自动" step="any" /></label>
+                <label>次刻度数 <input id="chart-y-minor-count" type="number" value="4" min="0" max="9" /></label>
+              </div>
+            </div>
+            <div id="chart-x-scale-group" class="chart-axis-group">
+              <strong>X 轴（数值型图表）</strong>
+              <div class="form-grid">
+                <label>范围模式
+                  <select id="chart-x-scale-mode">
+                    <option value="auto">自动规范定标</option>
+                    <option value="manual">手动设置</option>
+                  </select>
+                </label>
+                <label>主刻度间隔 <input id="chart-x-major-step" type="number" placeholder="自动" step="any" /></label>
+                <label>最小值 <input id="chart-x-min" type="number" placeholder="自动" step="any" /></label>
+                <label>最大值 <input id="chart-x-max" type="number" placeholder="自动" step="any" /></label>
+                <label>次刻度数 <input id="chart-x-minor-count" type="number" value="4" min="0" max="9" /></label>
+              </div>
+            </div>
+            <div id="chart-y2-scale-group" class="chart-axis-group" hidden>
+              <strong>右 Y 轴</strong>
+              <div class="form-grid">
+                <label>范围模式
+                  <select id="chart-y2-scale-mode">
+                    <option value="auto">自动规范定标</option>
+                    <option value="manual">手动设置</option>
+                  </select>
+                </label>
+                <label>主刻度间隔 <input id="chart-y2-major-step" type="number" placeholder="自动" step="any" /></label>
+                <label>最小值 <input id="chart-y2-min" type="number" placeholder="自动" step="any" /></label>
+                <label>最大值 <input id="chart-y2-max" type="number" placeholder="自动" step="any" /></label>
+                <label>次刻度数 <input id="chart-y2-minor-count" type="number" value="4" min="0" max="9" /></label>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="chart-setting-card chart-appearance-card">
+          <div class="chart-setting-card-heading">
+            <strong>外观风格</strong>
+            <span>整体风格、颜色和高级视觉参数</span>
+          </div>
+          <div class="chart-style-capsule">
+            <label data-chart-setting="style">
+              <span>作图风格</span>
+              <select id="chart-style">
+                <option value="easyppt">EasyPPT 风格</option>
+                <option value="graphpad">GraphPad 风格</option>
+                <option value="journal">Classic Journal</option>
+                <option value="python">Python / Matplotlib</option>
+                <option value="r">R / ggplot2</option>
+                <option value="minimal">Minimal</option>
+              </select>
+            </label>
+            <div class="chart-style-default" aria-live="polite">
+              <span id="chart-default-style-label">默认 EasyPPT</span>
+              <button id="chart-save-default-style" type="button" class="secondary">设为默认</button>
+            </div>
+          </div>
+          <div id="chart-simple-colors" class="chart-simple-colors" hidden></div>
           <label id="chart-bar-color-field" hidden>柱颜色
             <input id="chart-bar-color" type="color" value="#FF5252" />
           </label>
+          <details id="chart-color-editor" class="chart-advanced chart-color-editor">
+            <summary>单独修改系列颜色</summary>
+            <div class="chart-table-heading">
+              <strong>系列颜色</strong>
+              <span class="muted">仅在需要单独调整时使用</span>
+            </div>
+            <div id="chart-custom-colors" class="chart-custom-colors" data-chart-setting="series-colors"></div>
+            <div class="chart-color-library-heading">
+              <span id="chart-color-target-label">第 1 步：选择一个系列</span>
+              <button id="chart-open-custom-color" type="button" class="secondary">自定义颜色…</button>
+            </div>
+            <div id="chart-color-library" class="chart-color-library"></div>
+            <input id="chart-custom-color-picker" type="color" value="#0072B2" hidden />
+          </details>
+          <details class="chart-advanced chart-visual-advanced">
+            <summary>高级外观</summary>
+            <div class="form-grid">
+              <label>字体
+                <select id="chart-font-family">
+                  <option value="Arial">Arial</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="DejaVu Sans">DejaVu Sans</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Aptos">Aptos</option>
+                </select>
+              </label>
+              <label>标题字号 <input id="chart-title-size" type="number" value="30" min="16" max="54" /></label>
+              <label>轴标题字号 <input id="chart-axis-title-size" type="number" value="24" min="12" max="40" /></label>
+              <label>刻度字号 <input id="chart-tick-size" type="number" value="19" min="10" max="32" /></label>
+              <label>线宽 <input id="chart-line-width" type="number" value="4" min="1" max="12" step="0.5" /></label>
+              <label>点大小 <input id="chart-point-size" type="number" value="7" min="2" max="18" step="0.5" /></label>
+              <label>坐标轴线宽 <input id="chart-axis-width" type="number" value="3" min="0" max="8" step="0.5" /></label>
+              <label>柱/填充透明度 <input id="chart-fill-opacity" type="number" value="1" min="0.1" max="1" step="0.05" /></label>
+              <label>X 标签旋转 <input id="chart-x-rotation" type="number" value="0" min="-90" max="90" step="5" /></label>
+              <label id="chart-y2-gap-field" data-chart-setting="y2-axis" hidden>右轴文字间距 <input id="chart-y2-gap" type="number" value="18" min="8" max="100" step="2" /></label>
+              <label>背景色 <input id="chart-background" type="color" value="#FFFFFF" /></label>
+              <label>坐标轴颜色 <input id="chart-axis-color" type="color" value="#17211F" /></label>
+              <label>网格颜色 <input id="chart-grid-color" type="color" value="#DADFDA" /></label>
+            </div>
+          </details>
         </div>
-        <div class="chart-options">
-          <label><input id="chart-show-grid" type="checkbox" checked /> 网格线</label>
-          <label><input id="chart-show-legend" type="checkbox" checked /> 图例</label>
-          <label><input id="chart-show-labels" type="checkbox" /> 数据标签</label>
-          <label id="chart-gradient-field" hidden><input id="chart-bar-gradient" type="checkbox" checked /> 渐变柱</label>
+
+        <div class="chart-setting-card chart-elements-card">
+          <div class="chart-setting-card-heading">
+            <strong>图形元素</strong>
+            <span>网格线、图例、标签和当前图类型显示项</span>
+          </div>
+          <div class="chart-options">
+            <label><input id="chart-show-grid" type="checkbox" checked /> 网格线</label>
+            <label id="chart-gradient-field" hidden><input id="chart-bar-gradient" type="checkbox" checked /> 渐变柱</label>
+          </div>
+          <div id="chart-regression-settings" class="chart-submodule" hidden>
+            <strong>散点图线性回归</strong>
+            <div class="chart-options">
+              <label><input id="chart-show-regression" type="checkbox" /> 显示回归线</label>
+              <label><input id="chart-show-equation" type="checkbox" checked /> 显示回归公式</label>
+              <label><input id="chart-show-r2" type="checkbox" checked /> 显示 R²</label>
+            </div>
+          </div>
+          <details class="chart-setting-card chart-legend-card chart-sub-card" data-chart-setting="legend" open>
+            <summary>
+              <span><strong>图例</strong><small>显示、位置和字号</small></span>
+            </summary>
+            <div class="chart-module-body">
+              <label class="chart-module-toggle">
+                <input id="chart-show-legend" type="checkbox" checked />
+                <span><strong>显示图例</strong><small>关闭后不占用图表边距</small></span>
+              </label>
+              <div class="form-grid chart-compact-grid">
+                <label>位置
+                  <select id="chart-legend-position">
+                    <option value="top">顶部</option>
+                    <option value="right">右侧</option>
+                    <option value="bottom">底部</option>
+                    <option value="inside">图内右上</option>
+                  </select>
+                </label>
+                <label>字号
+                  <input id="chart-legend-size" type="number" value="19" min="10" max="32" />
+                </label>
+              </div>
+              <details class="chart-module-fine-tune">
+                <summary>位置微调</summary>
+                <div class="form-grid chart-compact-grid">
+                  <label>水平偏移
+                    <input id="chart-legend-offset-x" type="number" value="0" min="-300" max="300" step="5" />
+                  </label>
+                  <label>垂直偏移
+                    <input id="chart-legend-offset-y" type="number" value="0" min="-300" max="300" step="5" />
+                  </label>
+                </div>
+              </details>
+            </div>
+          </details>
+          <details class="chart-setting-card chart-label-card chart-sub-card" data-chart-setting="labels">
+            <summary>
+              <span><strong>数据标签</strong><small>数值内容、位置和样式</small></span>
+            </summary>
+            <div class="chart-module-body">
+              <div class="form-grid chart-label-settings">
+                <label>显示内容
+                  <select id="chart-label-mode">
+                    <option value="none">不显示</option>
+                    <option value="value">单点数值</option>
+                    <option value="nameValue">名称＋数值</option>
+                    <option value="summary">统计摘要</option>
+                    <option value="all">全部信息</option>
+                  </select>
+                </label>
+                <label>位置
+                  <select id="chart-label-position">
+                    <option value="above">上方</option>
+                    <option value="below">下方</option>
+                    <option value="right">右侧</option>
+                    <option value="left">左侧</option>
+                    <option value="center">居中</option>
+                  </select>
+                </label>
+                <label>小数位
+                  <select id="chart-label-decimals">
+                    <option value="auto">自动</option>
+                    <option value="0">0 位</option>
+                    <option value="1">1 位</option>
+                    <option value="2">2 位</option>
+                    <option value="3">3 位</option>
+                    <option value="4">4 位</option>
+                  </select>
+                </label>
+                <label>字号
+                  <input id="chart-label-size" type="number" value="17" min="10" max="30" />
+                </label>
+                <label>颜色
+                  <select id="chart-label-color-mode">
+                    <option value="auto">自动高对比</option>
+                    <option value="custom">自定义</option>
+                  </select>
+                </label>
+                <label id="chart-label-color-field" hidden>自定义颜色
+                  <input id="chart-label-color" type="color" value="#4F5855" />
+                </label>
+              </div>
+              <label class="chart-module-toggle chart-module-toggle-compact">
+                <input id="chart-label-bold" type="checkbox" />
+                <span><strong>标签加粗</strong></span>
+              </label>
+            </div>
+          </details>
         </div>
         <div class="button-grid two">
           <button data-action="insertCsvChart">插入高清图</button>
@@ -199,13 +628,13 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel compact-tool-panel citation-panel">
         <h2>DOI 引用</h2>
-        <div class="form-row">
+        <div class="form-row citation-query-row">
           <label>DOI <input id="doi-input" placeholder="10.1038/s41586-..." /></label>
           <button data-action="lookupDoi">查询</button>
         </div>
-        <div class="form-grid">
+        <div class="citation-style-grid">
           <label>引用格式
             <select id="citation-format">
               <option value="short">短引用</option>
@@ -215,19 +644,24 @@
           <label>字体 <input id="citation-font" list="citation-fonts" value="Arial" /></label>
           <label>字号 <input id="citation-size" type="number" value="8" min="5" max="24" step="0.5" /></label>
           <label>颜色 <input id="citation-color" type="color" value="#555555" /></label>
-          <label>位置 X <input id="citation-left" type="number" value="36" /></label>
-          <label>位置 Y <input id="citation-top" type="number" value="500" /></label>
-          <label>宽度 <input id="citation-width" type="number" value="648" /></label>
         </div>
+        <details class="compact-settings citation-position-settings">
+          <summary>插入位置与宽度</summary>
+          <div class="compact-coordinate-grid">
+            <label>位置 X <input id="citation-left" type="number" value="36" /></label>
+            <label>位置 Y <input id="citation-top" type="number" value="500" /></label>
+            <label>宽度 <input id="citation-width" type="number" value="648" /></label>
+          </div>
+        </details>
         <datalist id="citation-fonts">
           <option value="Arial"></option>
           <option value="Helvetica"></option>
           <option value="Times New Roman"></option>
           <option value="Aptos"></option>
         </datalist>
-        <textarea id="citation-output" rows="4" placeholder="查询结果会显示在这里"></textarea>
+        <textarea id="citation-output" rows="3" placeholder="查询结果会显示在这里"></textarea>
         <div id="citation-preview" class="citation-preview muted">短引用预览</div>
-        <div class="button-grid two">
+        <div class="button-grid two citation-actions">
           <button data-action="insertCitation">插入当前页</button>
           <button data-action="saveCitation">加入引用库</button>
         </div>
@@ -394,9 +828,10 @@
         <div class="asset-section-heading saved-assets-heading">
           <div>
             <strong>我的素材</strong>
-            <span>保存当前选中的对象组合</span>
+            <span>通过 PowerPoint 原生复制保存文本、图片、组合与特殊形状</span>
           </div>
         </div>
+        <div id="native-helper-status" class="native-helper-status">正在检查本地素材助手…</div>
         <div class="asset-overview" aria-label="素材库概览">
           <div class="asset-stat">
             <strong id="asset-count">0</strong>
@@ -407,8 +842,8 @@
             <span>个对象</span>
           </div>
           <div class="asset-stat asset-stat-wide">
-            <strong>本机保存</strong>
-            <span>仅存储在当前插件中</span>
+            <strong>原生剪贴板归档</strong>
+            <span>保留 PowerPoint 对象格式与可编辑性</span>
           </div>
         </div>
         <div class="form-row">
@@ -422,13 +857,58 @@
             <span class="asset-export-label">导出位置</span>
             <strong id="asset-export-title">系统“下载”文件夹</strong>
             <span id="asset-export-detail">导出后可在 Finder → 下载中找到</span>
-            <code id="asset-export-filename">slidesci-assets-日期时间.json</code>
+            <code id="asset-export-filename">easyppt-assets-日期时间.json</code>
           </div>
         </div>
         <div class="button-grid two">
-          <button data-action="exportAssets">导出 JSON</button>
+          <button data-action="exportAssets">导出索引 JSON</button>
           <button data-action="importAssets">导入素材</button>
           <input id="asset-file" type="file" accept="application/json" hidden />
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>智能动画</h2>
+        <p class="section-intro">分析当前页对象，并参考上一页与下一页的结构，生成克制、连贯的入场动画与页面过渡。</p>
+        <div class="form-grid">
+          <label>动画风格
+            <select id="animation-style">
+              <option value="balanced" selected>智能平衡</option>
+              <option value="subtle">克制简洁</option>
+              <option value="dynamic">重点突出</option>
+            </select>
+          </label>
+          <label>应用范围
+            <select id="animation-scope">
+              <option value="slide" selected>当前页全部对象</option>
+              <option value="selected">仅选中对象</option>
+            </select>
+          </label>
+          <label>跨页分析
+            <select id="animation-neighbors">
+              <option value="both" selected>分析上下页</option>
+              <option value="previous">仅分析上一页</option>
+              <option value="next">仅分析下一页</option>
+              <option value="none">不分析相邻页</option>
+            </select>
+          </label>
+          <label>已有动画
+            <select id="animation-existing">
+              <option value="replace" selected>安全更新目标对象</option>
+            </select>
+          </label>
+        </div>
+        <div class="animation-options">
+          <label><input id="animation-transition" type="checkbox" checked /> 自动设置页面过渡</label>
+          <label><input id="animation-decorations" type="checkbox" /> 装饰元素也添加动画</label>
+        </div>
+        <div id="animation-analysis" class="animation-analysis">
+          点击“分析方案”后，会在这里显示对象顺序、动画类型和跨页连续性。
+        </div>
+        <p class="section-divider-tip">macOS 安全模式：最多处理 12 个核心对象；高连续性页面会建议 Morph，但自动应用使用稳定的淡化过渡。</p>
+        <div class="button-grid two">
+          <button class="secondary" data-action="analyzeSmartAnimation">分析方案</button>
+          <button data-action="applySmartAnimation">一键应用</button>
         </div>
       </section>
 
@@ -490,6 +970,22 @@
         <button id="export-button" class="wide" data-action="exportSlides">导出当前页</button>
       </section>
     </main>
+
+    <div id="tool-outline-backdrop" class="tool-outline-backdrop" hidden></div>
+    <aside id="tool-outline" class="tool-outline" role="dialog" aria-modal="true" aria-labelledby="tool-outline-title" hidden>
+      <div class="tool-outline-header">
+        <div>
+          <strong id="tool-outline-title">功能大纲</strong>
+          <span>点击模块快速定位</span>
+        </div>
+        <button id="tool-outline-close" class="navigator-icon-button" type="button" aria-label="关闭大纲">×</button>
+      </div>
+      <div class="tool-outline-actions">
+        <button id="expand-all-panels" class="secondary" type="button">展开全部</button>
+        <button id="collapse-all-panels" class="secondary" type="button">收起全部</button>
+      </div>
+      <div id="tool-outline-content" class="tool-outline-content"></div>
+    </aside>
 
     <div id="toast" role="status" aria-live="polite"></div>
   </body>
