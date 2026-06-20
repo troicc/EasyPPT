@@ -1,31 +1,31 @@
 # EasyPPT
 
-[English](./README_EN.md) | 简体中文
+English | [简体中文](./README_CN.md)
 
-面向 macOS PowerPoint 的科研演示效率工具：集中完成排版、绘图、引用、素材复用与导出。
+A productivity toolkit for creating scientific presentations in PowerPoint on macOS—covering layout, plotting, citations, reusable assets, and export.
 
-## 核心功能
+## Key Features
 
-- **高效排版**：复制位置、尺寸、边框与文字格式；快速对齐、调整间距，并一键整理多图 Figure、标签、标题和图注。
-- **科研绘图**：支持常用统计图、热图、小提琴图及双 Y 轴图；内置多套期刊风格、科研配色、回归分析、误差展示和数据标签。
-- **内容增强**：插入 Markdown 与高清 LaTeX 公式，查询 DOI 并生成引用，使用 AI 润色科研文本。
-- **素材复用**：本地保存文本框、图片、组合、图表和特殊形状，再次插入时保持 PowerPoint 原生可编辑格式。
-- **演示优化**：根据页面内容及上下页结构智能安排对象动画和页面过渡。
-- **灵活导出**：将幻灯片导出为 PNG、JPEG、WebP，或把当前页、选中页及全部页面合并为 PDF。
-- **个性化工作区**：搜索、收藏和调整功能模块顺序，偏好设置自动保存在本地。
+- **Efficient layout** — Copy position, size, border, and text styles; align and distribute objects; build publication-ready multi-panel figures with labels, titles, and captions.
+- **Scientific plotting** — Create common statistical charts, heatmaps, violin plots, and dual-axis charts with journal-inspired styles, scientific palettes, regression, error visualization, and data labels.
+- **Content tools** — Insert Markdown and high-resolution LaTeX equations, retrieve DOI metadata and format citations, or polish scientific text with AI.
+- **Reusable assets** — Save text boxes, images, groups, charts, and special shapes locally, then restore them as editable native PowerPoint objects.
+- **Presentation enhancement** — Generate restrained object animations and slide transitions based on the current slide and its surrounding context.
+- **Flexible export** — Export slides as PNG, JPEG, or WebP, or combine the current, selected, or all slides into a PDF.
+- **Custom workspace** — Search, favorite, and reorder modules; preferences are saved locally.
 
-## 快速开始
+## Quick Start
 
 ```sh
 npm run start
 ```
 
-启动本地服务后，按照 [macOS 侧载指南](./docs/MAC_SIDELOAD.md) 将 `manifest.xml` 加载到 PowerPoint。
+After starting the local server, follow the [macOS sideloading guide](./docs/MAC_SIDELOAD.md) to load `manifest.xml` into PowerPoint.
 
-## 技术架构
+## Architecture
 
-EasyPPT 主体基于 PowerPoint Office.js Web Add-in。为保留素材的 Office 原生格式，macOS 端额外使用 Swift 剪贴板助手与 PowerPoint AppleScript 接口。
+EasyPPT is primarily a PowerPoint Office.js Web Add-in. On macOS, a native Swift clipboard helper and PowerPoint AppleScript integration preserve editable Office object formats in the local asset library.
 
-## 许可证
+## License
 
-源代码采用 [GNU AGPL v3.0 or later](./LICENSE) 许可。闭源商业集成可联系项目维护者获取商业授权；宣传素材、截图、EasyPPT 名称及品牌标识不包含在 AGPL 授权中，详见 [LICENSING.md](./LICENSING.md)。
+The source code is licensed under [GNU AGPL v3.0 or later](./LICENSE). Contact the maintainer for closed-source commercial licensing. Modified distributions must use a different name and logo; accurate references such as "based on EasyPPT" are permitted. See [LICENSING.md](./LICENSING.md) for complete terms.

@@ -37,9 +37,11 @@ AGPL. All rights to those assets are reserved unless a file states otherwise.
 ## Trademarks
 
 The EasyPPT name, logos, product identity, and related branding are not
-granted under the AGPL. The license does not give permission to imply that a
-modified or redistributed version is an official EasyPPT release or is
-endorsed by the EasyPPT maintainers.
+licensed under the AGPL. Modified or redistributed versions must use a
+different name and logo and must not imply affiliation with or endorsement
+by the EasyPPT project. Accurate descriptive references such as "based on
+EasyPPT" are permitted, provided they do not create confusion about the
+origin or official status of the modified version.
 
 ## Third-party services and software
 
