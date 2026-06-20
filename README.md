@@ -1,4 +1,16 @@
-# EasyPPT
+<p align="center">
+  <img src="./assets/easyppt-logo.svg" width="128" alt="EasyPPT logo">
+</p>
+
+<h1 align="center">EasyPPT</h1>
+
+<p align="center">
+  <a href="https://github.com/troicc/EasyPPT/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/troicc/EasyPPT?style=flat-square"></a>
+  <a href="./LICENSE"><img alt="License: AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-195B57?style=flat-square"></a>
+  <img alt="Platform: macOS" src="https://img.shields.io/badge/platform-macOS-222222?style=flat-square&logo=apple">
+  <img alt="PowerPoint Office.js add-in" src="https://img.shields.io/badge/PowerPoint-Office.js-B7472A?style=flat-square&logo=microsoftpowerpoint">
+  <img alt="Native helper: Swift" src="https://img.shields.io/badge/native_helper-Swift-F05138?style=flat-square&logo=swift&logoColor=white">
+</p>
 
 English | [简体中文](./README_CN.md)
 
@@ -25,6 +37,12 @@ After starting the local server, follow the [macOS sideloading guide](./docs/MAC
 ## Architecture
 
 EasyPPT is primarily a PowerPoint Office.js Web Add-in. On macOS, a native Swift clipboard helper and PowerPoint AppleScript integration preserve editable Office object formats in the local asset library.
+
+## Brand Assets
+
+- Vector logo: [`assets/easyppt-logo.svg`](./assets/easyppt-logo.svg)
+- 1024 px app icon: [`assets/easyppt-icon-1024.png`](./assets/easyppt-icon-1024.png)
+- macOS application icon: [`assets/EasyPPT.icns`](./assets/EasyPPT.icns)
 
 ## License
 

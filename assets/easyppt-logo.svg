@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">EasyPPT logo</title>
+  <desc id="desc">A presentation slide with a rising scientific chart and a gold sparkle.</desc>
+  <defs>
+    <linearGradient id="bg" x1="164" y1="96" x2="848" y2="928" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#267A73"/>
+      <stop offset="0.52" stop-color="#195B57"/>
+      <stop offset="1" stop-color="#103F3C"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="300" y1="238" x2="690" y2="710" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF4F1"/>
+    </linearGradient>
+    <filter id="shadow" x="136" y="154" width="752" height="706" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="34" stdDeviation="34" flood-color="#082E2B" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+
+  <rect x="32" y="32" width="960" height="960" rx="224" fill="url(#bg)"/>
+  <rect x="48" y="48" width="928" height="928" rx="208" fill="none" stroke="#FFFFFF" stroke-opacity="0.13" stroke-width="8"/>
+
+  <g filter="url(#shadow)">
+    <rect x="210" y="220" width="604" height="570" rx="88" fill="url(#paper)"/>
+    <rect x="258" y="268" width="508" height="474" rx="54" fill="#FFFFFF" stroke="#DCE8E3" stroke-width="10"/>
+  </g>
+
+  <path d="M326 625V365" fill="none" stroke="#B7CBC4" stroke-linecap="round" stroke-width="24"/>
+  <path d="M326 625H704" fill="none" stroke="#B7CBC4" stroke-linecap="round" stroke-width="24"/>
+
+  <path d="M346 570L438 486L516 532L626 404L704 448" fill="none" stroke="#195B57" stroke-linecap="round" stroke-linejoin="round" stroke-width="46"/>
+  <circle cx="346" cy="570" r="25" fill="#195B57"/>
+  <circle cx="438" cy="486" r="25" fill="#195B57"/>
+  <circle cx="516" cy="532" r="25" fill="#195B57"/>
+  <circle cx="626" cy="404" r="27" fill="#F0B44C"/>
+  <circle cx="704" cy="448" r="25" fill="#195B57"/>
+
+  <path d="M748 240C755 286 778 309 824 316C778 323 755 346 748 392C741 346 718 323 672 316C718 309 741 286 748 240Z" fill="#F0B44C"/>
+  <circle cx="850" cy="242" r="20" fill="#F7CF80"/>
+</svg>

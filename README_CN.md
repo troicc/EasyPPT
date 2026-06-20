@@ -1,4 +1,16 @@
-# EasyPPT
+<p align="center">
+  <img src="./assets/easyppt-logo.svg" width="128" alt="EasyPPT Logo">
+</p>
+
+<h1 align="center">EasyPPT</h1>
+
+<p align="center">
+  <a href="https://github.com/troicc/EasyPPT/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/troicc/EasyPPT?style=flat-square"></a>
+  <a href="./LICENSE"><img alt="许可证：AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-195B57?style=flat-square"></a>
+  <img alt="平台：macOS" src="https://img.shields.io/badge/platform-macOS-222222?style=flat-square&logo=apple">
+  <img alt="PowerPoint Office.js 插件" src="https://img.shields.io/badge/PowerPoint-Office.js-B7472A?style=flat-square&logo=microsoftpowerpoint">
+  <img alt="原生助手：Swift" src="https://img.shields.io/badge/native_helper-Swift-F05138?style=flat-square&logo=swift&logoColor=white">
+</p>
 
 [English](./README.md) | 简体中文
 
@@ -25,6 +37,12 @@ npm run start
 ## 技术架构
 
 EasyPPT 主体基于 PowerPoint Office.js Web Add-in。为保留素材的 Office 原生格式，macOS 端额外使用 Swift 剪贴板助手与 PowerPoint AppleScript 接口。
+
+## 品牌素材
+
+- 矢量 Logo：[`assets/easyppt-logo.svg`](./assets/easyppt-logo.svg)
+- 1024 px 应用图标：[`assets/easyppt-icon-1024.png`](./assets/easyppt-icon-1024.png)
+- macOS 应用图标：[`assets/EasyPPT.icns`](./assets/EasyPPT.icns)
 
 ## 许可证
 

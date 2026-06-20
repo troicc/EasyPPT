@@ -8,6 +8,8 @@
   <DefaultLocale>zh-CN</DefaultLocale>
   <DisplayName DefaultValue="EasyPPT"/>
   <Description DefaultValue="科研 PPT 效率助手：排版、图表、引用、素材、Markdown、LaTeX、AI 与导出。"/>
+  <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-80.png"/>
   <SupportUrl DefaultValue="https://localhost:3000/src/taskpane.html"/>
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
