@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/easyppt-logo.svg" width="128" alt="EasyPPT Logo">
+  <img src="./assets/easyppt-icon-1024.png" width="128" alt="EasyPPT Logo">
 </p>
 
 <h1 align="center">EasyPPT</h1>
@@ -40,7 +40,6 @@ EasyPPT 主体基于 PowerPoint Office.js Web Add-in。为保留素材的 Office
 
 ## 品牌素材
 
-- 矢量 Logo：[`assets/easyppt-logo.svg`](./assets/easyppt-logo.svg)
 - 1024 px 应用图标：[`assets/easyppt-icon-1024.png`](./assets/easyppt-icon-1024.png)
 - macOS 应用图标：[`assets/EasyPPT.icns`](./assets/EasyPPT.icns)
 

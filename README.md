@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/easyppt-logo.svg" width="128" alt="EasyPPT logo">
+  <img src="./assets/easyppt-icon-1024.png" width="128" alt="EasyPPT logo">
 </p>
 
 <h1 align="center">EasyPPT</h1>
@@ -40,7 +40,6 @@ EasyPPT is primarily a PowerPoint Office.js Web Add-in. On macOS, a native Swift
 
 ## Brand Assets
 
-- Vector logo: [`assets/easyppt-logo.svg`](./assets/easyppt-logo.svg)
 - 1024 px app icon: [`assets/easyppt-icon-1024.png`](./assets/easyppt-icon-1024.png)
 - macOS application icon: [`assets/EasyPPT.icns`](./assets/EasyPPT.icns)
 
